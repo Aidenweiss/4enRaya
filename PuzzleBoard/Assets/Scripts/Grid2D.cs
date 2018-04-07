@@ -69,6 +69,7 @@ public class Grid2D : MonoBehaviour
             {
                 GameObject go = grid[x, y];
                 ColorFijo(x, y, go);
+                Verificacion(grid[x,y],x,y,width, height);
             }
         }
 
@@ -77,7 +78,9 @@ public class Grid2D : MonoBehaviour
     void Senalar(GameObject turi)
     {
         if (turi.GetComponent<Renderer>().material.color == Color.white)
-        turi.GetComponent<Renderer>().material.color = Color.yellow;
+        {
+            turi.GetComponent<Renderer>().material.color = Color.yellow;
+        }
     }
 
    public void ColorFijo (int x, int y, GameObject go)
@@ -88,6 +91,7 @@ public class Grid2D : MonoBehaviour
             if (go.GetComponent<Renderer>().material.color != Color.red && go.GetComponent<Renderer>().material.color != Color.blue)
             {
                 go.GetComponent<Renderer>().material.SetColor("_Color", Color.red);
+                
             }
   
         }
@@ -96,10 +100,37 @@ public class Grid2D : MonoBehaviour
             if (go.GetComponent<Renderer>().material.color != Color.red && go.GetComponent<Renderer>().material.color != Color.blue)
             {
                 go.GetComponent<Renderer>().material.SetColor("_Color", Color.blue);
+                
             }
        
         }
         isPlayerOne = !isPlayerOne;
+    }
+
+    void Verificacion(GameObject argh, int x, int y, int width, int height)
+    {
+        int a = x;
+        int b = y;
+        int rojo = 0;
+
+        for (a = x; a < width; a++)
+        {
+            if (grid[a, b] == grid[a + 1, b])
+            {
+                rojo = rojo + 1;
+            }
+            else
+            {
+                break;
+            }
+        }
+        for (a = x; a < width; a++)
+        {
+            if (grid[a, b] == grid[a + 1, b])
+            {
+                rojo = rojo + 1;
+            }
+        }
     }
 }
 
