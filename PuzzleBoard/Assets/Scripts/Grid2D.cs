@@ -7,8 +7,9 @@ public class Grid2D : MonoBehaviour
     public int width;
     public int height;
     public GameObject puzzlePiece;
-    private GameObject[,] grid;
+    public GameObject[,] grid;
     public bool isPlayerOne;
+	public int rojo = 0;
 
     // Use this for initialization
     void Start()
@@ -69,7 +70,7 @@ public class Grid2D : MonoBehaviour
             {
                 GameObject go = grid[x, y];
                 ColorFijo(x, y, go);
-                Verificacion(grid[x,y],x,y,width, height);
+				Verificacion(x,y,go);
             }
         }
 
@@ -107,30 +108,28 @@ public class Grid2D : MonoBehaviour
         isPlayerOne = !isPlayerOne;
     }
 
-    void Verificacion(GameObject argh, int x, int y, int width, int height)
-    {
-        int a = x;
-        int b = y;
-        int rojo = 0;
+	public void Verificacion(int x, int y, GameObject go)
+	{
+		
+		for (int _y = 0; _y < width -1; _y++) 
 
-        for (a = x; a < width; a++)
-        {
-            if (grid[a, b] == grid[a + 1, b])
-            {
-                rojo = rojo + 1;
-            }
-            else
-            {
-                break;
-            }
-        }
-        for (a = x; a < width; a++)
-        {
-            if (grid[a, b] == grid[a + 1, b])
-            {
-                rojo = rojo + 1;
-            }
-        }
-    }
+		{
+			if (grid [x, _y].gameObject.GetComponent<Renderer> ().material.color == grid [x, _y + 1].gameObject.GetComponent<Renderer> ().material.color) 
+			{
+				if (go.GetComponent<Renderer> ().material.color != Color.white) 
+				{
+					if (go.GetComponent<Renderer> ().material.color == Color.red) 
+					{
+						rojo++;
+					} 
+
+				}
+			}
+			else
+			{
+				rojo = 0;
+			}
+		}
+	}
 }
 
