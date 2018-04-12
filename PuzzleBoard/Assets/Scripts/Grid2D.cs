@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Grid2D : MonoBehaviour
 {
@@ -9,6 +10,15 @@ public class Grid2D : MonoBehaviour
     public GameObject puzzlePiece;
     private GameObject[,] grid;
     public bool isPlayerOne;
+    public int rojo;
+    public int azul;
+    private Color tinte;
+    public int conth;
+    public int contv;
+    public int contk;
+    public int contp;
+    private Text Rojo;
+    private Text Azul;
 
     // Use this for initialization
     void Start()
@@ -65,11 +75,41 @@ public class Grid2D : MonoBehaviour
 
 
             Senalar(grid[x, y]);
+
             if (Input.GetMouseButtonDown(0))
             {
                 GameObject go = grid[x, y];
-                ColorFijo(x, y, go);
-                Verificacion(grid[x,y],x,y,width, height);
+                if (go.GetComponent<Renderer>().material.color != Color.red && go.GetComponent<Renderer>().material.color != Color.blue)
+                {
+                    ColorFijo(x, y, go);
+                    VerIzq(x, y, go.GetComponent<Renderer>().material.color);
+                    VerDer(x, y, go.GetComponent<Renderer>().material.color);
+                    VerArr(x, y, go.GetComponent<Renderer>().material.color);
+                    VerAba(x, y, go.GetComponent<Renderer>().material.color);
+                    DiagDerU(x, y, go.GetComponent<Renderer>().material.color);
+                    DiagDerD(x, y, go.GetComponent<Renderer>().material.color);
+                    DiagIzqU(x, y, go.GetComponent<Renderer>().material.color);
+                    DiagIzqD(x, y, go.GetComponent<Renderer>().material.color);
+                    conth = VerIzq(x, y, go.GetComponent<Renderer>().material.color) + VerDer(x, y, go.GetComponent<Renderer>().material.color);
+                    contv = VerArr(x, y, go.GetComponent<Renderer>().material.color) + VerAba(x, y, go.GetComponent<Renderer>().material.color);
+                    contk = DiagDerU(x, y, go.GetComponent<Renderer>().material.color) + DiagIzqD(x, y, go.GetComponent<Renderer>().material.color);
+                    contp = DiagIzqU(x, y, go.GetComponent<Renderer>().material.color) + DiagDerD(x, y, go.GetComponent<Renderer>().material.color);
+
+                    if (conth == 3 || contv == 3 || contk == 3 || contp == 3)
+                    {
+                        if (isPlayerOne)
+                        {
+                            Debug.Log("Gano el Azul");
+                          
+                        }
+                        else
+                        {
+                            Debug.Log("Gano el Rojo");
+                        }
+                       
+                    }
+                }
+                
             }
         }
 
@@ -107,30 +147,147 @@ public class Grid2D : MonoBehaviour
         isPlayerOne = !isPlayerOne;
     }
 
-    void Verificacion(GameObject argh, int x, int y, int width, int height)
+    int VerIzq(int x, int y, Color tinte)
     {
-        int a = x;
-        int b = y;
-        int rojo = 0;
-
-        for (a = x; a < width; a++)
+        int conth = 0;
+        while (x > 0)
         {
-            if (grid[a, b] == grid[a + 1, b])
+            x = x - 1;
+            if(grid[x,y].GetComponent<Renderer>().material.color == tinte)
             {
-                rojo = rojo + 1;
+                conth++;
             }
             else
             {
                 break;
             }
         }
-        for (a = x; a < width; a++)
+        return conth;
+        
+            
+    }
+    int VerDer ( int x, int y, Color tinte)
+    {
+        int contk = 0;
+        while (x < width-1)
         {
-            if (grid[a, b] == grid[a + 1, b])
+            x = x + 1;
+            if (grid[x, y].GetComponent<Renderer>().material.color == tinte)
             {
-                rojo = rojo + 1;
+                contk++;
+            }
+            else
+            {
+                break;
             }
         }
+        return contk;
+    }
+    int VerArr(int x, int y, Color tinte)
+    {
+        int contv = 0;
+        while (y > 0)
+        {
+            y = y - 1;
+            if (grid[x, y].GetComponent<Renderer>().material.color == tinte)
+            {
+                contv++;
+            }
+            else
+            {
+                break;
+            }
+        }
+        return contv;
+    }
+    int VerAba(int x, int y, Color tinte)
+    {
+        int contv = 0;
+        while (y < height-1)
+        {
+            y = y + 1;
+            if (grid[x, y].GetComponent<Renderer>().material.color == tinte)
+            {
+                contv++;
+            }
+            else
+            {
+                break;
+            }
+        }
+        return contv;
+    }
+    int DiagDerU(int x, int y, Color tinte)
+    {
+        int contk = 0;
+        while (y < height-1 && x < width-1)
+        {
+            x = x + 1;
+            y = y + 1;
+            if (grid[x, y].GetComponent<Renderer>().material.color == tinte)
+            {
+                contk++;
+            }
+            else
+            {
+                break;
+            }
+        }
+        return contk;
+    }
+    int DiagIzqD(int x, int y, Color tinte)
+    {
+        int contk = 0;
+        while (y > 0 && x > 0)
+        {
+            x = x - 1;
+            y = y - 1;
+            if (grid[x, y].GetComponent<Renderer>().material.color == tinte)
+            {
+                contk++;
+            }
+            else
+            {
+                break;
+            }
+        }
+        return contk;
+    }
+    int DiagIzqU(int x, int y, Color tinte)
+    {
+        int contp = 0;
+        while (y < height-1 && x > 0)
+        {
+            x = x - 1;
+            y = y + 1;
+            if (grid[x, y].GetComponent<Renderer>().material.color == tinte)
+            {
+                contp++;
+            }
+            else
+            {
+                break;
+            }
+        }
+        return contp;
+    }
+    int DiagDerD(int x, int y, Color tinte)
+    {
+        int contp = 0;
+        while (y > 0 && x < width-1)
+        {
+            x = x + 1;
+            y = y - 1;
+            if (grid[x, y].GetComponent<Renderer>().material.color == tinte)
+            {
+                contp++;
+            }
+            else
+            {
+                break;
+            }
+        }
+        return contp;
     }
 }
 
