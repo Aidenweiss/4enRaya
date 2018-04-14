@@ -8,9 +8,10 @@ public class Grid2D : MonoBehaviour
     public int width;
     public int height;
     public GameObject puzzlePiece;
-    private GameObject[,] grid;
+    public GameObject[,] grid;
     public bool isPlayerOne;
-    public int rojo;
+
+    public int rojo = 0;
     public int azul;
     private Color tinte;
     public int conth;
@@ -19,11 +20,14 @@ public class Grid2D : MonoBehaviour
     public int contp;
     private Text Rojo;
     private Text Azul;
+    private bool termino;
+	
+
 
     // Use this for initialization
     void Start()
     {
-       
+        
         grid = new GameObject[width, height];
 
         for (int x = 0; x < width; x++)
@@ -38,14 +42,23 @@ public class Grid2D : MonoBehaviour
             }
         }
         isPlayerOne = true;
+        termino = false;
+        Destru(grid);
     }
 
     // Update is called once per frame
     void Update()
     {
-        Vector3 mPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Debug.DrawLine(Vector3.zero, mPosition);
-        UpdatePickedPiece(mPosition);
+        if (termino)
+        {
+            return;
+        }
+        else
+        {
+            Vector3 mPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Debug.DrawLine(Vector3.zero, mPosition);
+            UpdatePickedPiece(mPosition);
+        }
     }
 
     public void UpdatePickedPiece(Vector3 position)
@@ -64,6 +77,7 @@ public class Grid2D : MonoBehaviour
                     {
                         go.GetComponent<Renderer>().material.SetColor("_Color", Color.white);
 
+
                     }
                    
                 }
@@ -79,6 +93,7 @@ public class Grid2D : MonoBehaviour
             if (Input.GetMouseButtonDown(0))
             {
                 GameObject go = grid[x, y];
+
                 if (go.GetComponent<Renderer>().material.color != Color.red && go.GetComponent<Renderer>().material.color != Color.blue)
                 {
                     ColorFijo(x, y, go);
@@ -100,19 +115,32 @@ public class Grid2D : MonoBehaviour
                         if (isPlayerOne)
                         {
                             Debug.Log("Gano el Azul");
-                          
+                            StartCoroutine(TiempoEsp());
                         }
                         else
                         {
                             Debug.Log("Gano el Rojo");
+                            StartCoroutine(TiempoEsp());
                         }
                        
                     }
                 }
                 
+
+                
+
             }
         }
 
+    }
+    IEnumerator TiempoEsp()
+    {
+        termino = true;
+        yield return new WaitForSeconds(5f);
+        Debug.Log("lalala");
+        Blanco(grid);
+        Destru(grid);
+        termino = false;
     }
 
     void Senalar(GameObject turi)
@@ -146,6 +174,7 @@ public class Grid2D : MonoBehaviour
         }
         isPlayerOne = !isPlayerOne;
     }
+
 
     int VerIzq(int x, int y, Color tinte)
     {
@@ -289,5 +318,46 @@ public class Grid2D : MonoBehaviour
         }
         return contp;
     }
+
+	void Blanco(GameObject [,] grid)
+    {
+        
+        for (int a = 0; a < grid.GetLength(0); a++)
+        {
+            for (int b = 0; b < grid.GetLength(1); b++)
+            {
+                grid[a, b].GetComponent<Renderer>().material.color = Color.white;
+                grid[a, b].SetActive(true);
+            }
+        }
+    }
+
+    void Destru(GameObject [,] grid)
+    {
+        for (int a = 0; a < grid.GetLength(0); a++)
+        {
+            List<int> crash;
+            crash = new List<int>();
+            int c = Random.Range(0, 2);
+            if (c == 1)
+            {
+                crash.Add(Random.Range(0, grid.GetLength(1)));
+                grid[a, crash[0]].SetActive(false);
+            }
+            else if (c == 2)
+            {
+                crash.Add(Random.Range(0, grid.GetLength(1)));
+                int d = Random.Range(0, grid.GetLength(1));
+                while (d == crash[0])
+                {
+                    d = Random.Range(0, grid.GetLength(1));
+                }
+                crash.Add(d);
+                grid[a, crash[0]].SetActive(false);
+                grid[a, crash[1]].SetActive(false);
+            }
+        }
+    }
+
 }
 
